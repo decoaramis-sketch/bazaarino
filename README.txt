@@ -1,5 +1,5 @@
-کالاپیدا V1
+کالاپیدا V2 — مارکت‌پلیس خرید، مقایسه و فروش
 هرچی می‌خوای، پیدا کن.
 
-نسخه Frontend/PWA آماده انتشار روی GitHub Pages.
-در Repository فایل‌ها را در ریشه قرار دهید و Pages را روی main / root تنظیم کنید.
+نسخه Frontend/PWA آماده GitHub Pages است.
+Branch: main / Folder: root
