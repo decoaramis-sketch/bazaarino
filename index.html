@@ -2,32 +2,63 @@
 <html lang="fa" dir="rtl">
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#df1023"><meta name="apple-mobile-web-app-capable" content="yes">
-<link rel="manifest" href="manifest.json"><link rel="stylesheet" href="style.css">
-<meta name="description" content="کالاپیدا؛ خرید، مقایسه قیمت و فروش کالا"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><title>کالاپیدا | هرچی می‌خوای، پیدا کن</title>
+<meta name="theme-color" content="#e5092f"><meta name="description" content="کالاپیدا؛ بازار هوشمند خرید، مقایسه و فروش کالا">
+<link rel="manifest" href="manifest.json"><link rel="icon" href="icon.svg">
+<title>کالاپیدا | بازار هوشمند</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
 </head>
 <body>
-<div id="app">
-<header class="top">
-  <div class="topline"><button class="icon" id="menu">☰</button><div class="brand"><span class="brand-mark"><span class="brand-bag"></span></span><b>کالاپیدا</b><small>هرچی می‌خوای، پیدا کن</small></div><button class="icon glass-icon" id="bell" aria-label="اعلان‌ها"><span class="bell-dot"></span>♧</button></div>
-  <label class="search">⌕<input id="search" placeholder="جستجوی کالا، برند یا مدل"></label>
-</header>
-<main id="screen"></main>
-<nav class="nav">
- <button data-go="home" class="active">⌂<small>خانه</small></button>
- <button data-go="search">⌕<small>جستجو</small></button>
- <button data-go="sell" class="sell">＋<small>فروش</small></button>
- <button data-go="cart">🛒<small>سبد</small></button>
- <button data-go="profile">♙<small>حساب</small></button>
-</nav>
-<div id="drawer" class="drawer"><aside><div class="dhead"><div class="avatar">ع</div><b>علی محمدی</b><button id="close">×</button></div>
- <div class="dmenu">
-  <button data-go="home">🏠 خانه</button><button data-go="search">🔎 جستجوی کالا</button><button data-go="categories">🗂 دسته‌بندی‌ها</button>
-  <button data-go="orders">📦 سفارش‌های من</button><button data-go="favorites">♥ علاقه‌مندی‌ها</button><button data-go="seller">🏪 فروشگاه من</button>
-  <button data-go="wallet">💳 کیف پول</button><button data-go="chat">💬 پیام‌ها</button><button data-go="admin">⚙️ مدیریت</button>
- </div></aside></div>
-<div id="toast"></div>
+<div class="app-shell">
+  <aside class="sidebar" id="sidebar">
+    <div class="side-top"><div class="brand-mini"><span class="brand-mark">K</span><div><b>کالاپیدا</b><small>بازار هوشمند</small></div></div><button class="icon-btn close-side" id="closeSide">×</button></div>
+    <div class="profile-card"><div class="avatar">ک</div><div><b>مهمان کالاپیدا</b><small>ورود برای امکانات بیشتر</small></div><button>ورود</button></div>
+    <nav>
+      <a class="active" href="#home"><span class="nav-ico">⌂</span>خانه</a>
+      <a href="#compare"><span class="nav-ico">↔</span>مقایسه قیمت</a>
+      <a href="#categories"><span class="nav-ico">▦</span>دسته‌بندی‌ها</a>
+      <a href="#sell"><span class="nav-ico">＋</span>فروش کالا</a>
+      <a href="#orders"><span class="nav-ico">▤</span>سفارش‌های من</a>
+      <a href="#favorites"><span class="nav-ico">♡</span>علاقه‌مندی‌ها</a>
+    </nav>
+    <div class="side-box"><b>فروشنده شو!</b><p>کالایت را در چند دقیقه برای هزاران خریدار معرفی کن.</p><button onclick="openSell()">ثبت کالا</button></div>
+    <div class="side-foot"><span>نسخه 3.0</span><span>پشتیبانی</span></div>
+  </aside>
+  <div class="overlay" id="overlay"></div>
+  <main class="main" id="home">
+    <header class="topbar">
+      <button class="menu-btn" id="openSide"><span></span><span></span><span></span></button>
+      <div class="brand"><span class="brand-mark">K</span><div><b>کالاپیدا</b><small>خرید، مقایسه، فروش</small></div></div>
+      <div class="search-wrap"><span class="search-icon">⌕</span><input id="search" placeholder="جستجو بین هزاران کالا، برند یا مدل..."/><kbd>Ctrl K</kbd><button class="search-btn" onclick="doSearch()">جستجو</button></div>
+      <div class="top-actions"><button class="top-icon" title="اعلان‌ها">♢<i>2</i></button><button class="top-icon" title="سبد">▱<i id="cartCount">0</i></button><button class="user-pill">حساب من</button></div>
+    </header>
+
+    <section class="hero" id="compare">
+      <div class="hero-copy"><span class="eyebrow">بازار هوشمند ایران</span><h1>بهترین قیمت را <strong>پیدا کن.</strong></h1><p>قیمت فروشگاه‌ها را مقایسه کن، کالای نو یا دست‌دوم بخر و اگر فروشنده‌ای، کالاهایت را راحت بفروش.</p><div class="hero-buttons"><button class="primary" onclick="scrollToId('products')">شروع خرید <span>←</span></button><button class="ghost" onclick="openSell()">＋ فروش کالا</button></div><div class="hero-stats"><span><b>۲۴۰هزار+</b> کالا</span><span><b>۱۸هزار+</b> فروشنده</span><span><b>۴.۸</b> رضایت کاربران</span></div></div>
+      <div class="hero-art"><div class="orb orb1"></div><div class="orb orb2"></div><div class="floating-tag tag1">٪ تخفیف تا ۴۵٪</div><div class="floating-tag tag2">✓ فروشنده تأییدشده</div><div class="device-3d"><div class="device-screen"><div class="screen-logo">K</div><div class="screen-line"></div><div class="screen-card"><span></span><b>Galaxy S25</b><small>از ۴۹,۹۹۰,۰۰۰</small></div><div class="screen-card"><span></span><b>AirPods Pro</b><small>از ۱۱,۹۰۰,۰۰۰</small></div></div></div></div>
+    </section>
+
+    <section class="trust"><span>🛡 <b>خرید امن</b><small>فروشنده‌های معتبر</small></span><span>↔ <b>مقایسه قیمت</b><small>از چند فروشگاه</small></span><span>⚡ <b>ارسال سریع</b><small>به سراسر ایران</small></span><span>↩ <b>پشتیبانی</b><small>همراه شما</small></span></section>
+
+    <section class="section" id="categories"><div class="section-head"><div><span class="eyebrow dark">دسته‌بندی‌ها</span><h2>چی می‌خوای بخری؟</h2></div><button class="link-btn">مشاهده همه ←</button></div><div class="categories">
+      <button class="cat active" onclick="filterCat('موبایل')"><span class="cat-icon phone"><i></i></span><b>موبایل</b><small>۱۲,۴۰۰ کالا</small></button>
+      <button class="cat" onclick="filterCat('لپ‌تاپ')"><span class="cat-icon laptop"><i></i></span><b>لپ‌تاپ</b><small>۸,۲۰۰ کالا</small></button>
+      <button class="cat" onclick="filterCat('هدفون')"><span class="cat-icon headphones"><i></i></span><b>هدفون</b><small>۶,۹۰۰ کالا</small></button>
+      <button class="cat" onclick="filterCat('گیمینگ')"><span class="cat-icon gamepad"><i></i></span><b>گیمینگ</b><small>۵,۱۰۰ کالا</small></button>
+      <button class="cat" onclick="filterCat('پوشاک')"><span class="cat-icon shirt"><i></i></span><b>پوشاک</b><small>۲۱,۷۰۰ کالا</small></button>
+      <button class="cat" onclick="filterCat('خانه')"><span class="cat-icon homeicon"><i></i></span><b>خانه</b><small>۱۷,۳۰۰ کالا</small></button>
+      <button class="cat" onclick="filterCat('خودرو')"><span class="cat-icon car"><i></i></span><b>خودرو</b><small>۹,۴۰۰ کالا</small></button>
+    </div></section>
+
+    <section class="section" id="products"><div class="section-head"><div><span class="eyebrow dark">پیشنهادهای امروز</span><h2>محبوب‌ترین‌ها</h2></div><div class="filters"><button class="filter active">همه</button><button class="filter">پرفروش</button><button class="filter">ارزان‌ترین</button><button class="filter">تخفیف‌دار</button></div></div><div class="product-grid" id="productGrid"></div></section>
+
+    <section class="sell-banner" id="sell"><div><span class="eyebrow">برای فروشنده‌ها</span><h2>کالایت را به هزاران خریدار معرفی کن</h2><p>ثبت کالا رایگان است؛ قیمت، عکس و توضیحات را وارد کن و فروش را شروع کن.</p></div><button class="primary" onclick="openSell()">＋ ثبت کالای جدید</button><div class="sell-orb"></div></section>
+
+    <footer><div><b>کالاپیدا</b><span>بازار هوشمند خرید و فروش</span></div><span>درباره ما</span><span>قوانین</span><span>پشتیبانی</span><span>© ۱۴۰۵ کالاپیدا</span></footer>
+  </main>
 </div>
+<div class="bottom-nav"><button class="active" onclick="scrollToId('home')"><span>⌂</span>خانه</button><button onclick="scrollToId('compare')"><span>↔</span>مقایسه</button><button class="sell-fab" onclick="openSell()"><span>＋</span>فروش</button><button onclick="scrollToId('products')"><span>⌕</span>جستجو</button><button onclick="openSidePanel()"><span>☰</span>منو</button></div>
+<div class="modal" id="sellModal"><div class="modal-card"><button class="modal-close" onclick="closeSell()">×</button><div class="modal-icon">＋</div><h2>فروش کالای جدید</h2><p>اطلاعات کالا را وارد کن تا آگهی آماده شود.</p><label>نام کالا<input id="sellName" placeholder="مثلاً آیفون ۱۵ پرو"></label><label>قیمت<input id="sellPrice" placeholder="مثلاً ۵۵,۰۰۰,۰۰۰ تومان"></label><label>دسته‌بندی<select><option>موبایل</option><option>لپ‌تاپ</option><option>پوشاک</option><option>خانه</option></select></label><button class="primary full" onclick="submitSell()">ثبت آگهی</button></div></div>
 <script src="app.js"></script>
-</body>
-</html>
+</body></html>

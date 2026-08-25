@@ -1,62 +1,26 @@
-
-function visual(v){
-  const m={"📱":"phone","💻":"laptop","📺":"tv","🏠":"home","🎧":"headphone","🎮":"console","👕":"shirt","🚗":"car","📷":"camera","🛍️":"bag","⚽":"sport","💍":"beauty","🛠️":"tool"};
-  const c=m[v]||"bag";
-  return `<span class="visual ${c}"><i></i><em></em></span>`;
-}
 const products=[
-["iPhone 15 128GB","📱","49,800,000","۱۲ فروشگاه"],
-["iPhone 15 Pro 256GB","📱","63,500,000","۳۴ فروشگاه"],
-["Samsung S25 256GB","📱","58,900,000","۲۱ فروشگاه"],
-["MacBook Air M2","💻","72,000,000","۲۲ فروشگاه"],
-["PS5 Slim","🎮","28,500,000","۱۸ فروشنده"],
-["AirPods Pro 2","🎧","8,900,000","۱۵ فروشگاه"]
+ {name:'Samsung Galaxy S25 Ultra',cat:'موبایل',price:'۶۹,۹۰۰,۰۰۰',old:'۷۳,۵۰۰,۰۰۰',discount:'۵٪',seller:'تکنولند',rating:'۴.۸',type:'phone'},
+ {name:'MacBook Air M3 15-inch',cat:'لپ‌تاپ',price:'۸۹,۸۰۰,۰۰۰',old:'۹۴,۰۰۰,۰۰۰',discount:'۴٪',seller:'اپل‌سنتر',rating:'۴.۹',type:'laptop'},
+ {name:'Sony WH-1000XM5',cat:'هدفون',price:'۱۹,۴۰۰,۰۰۰',old:'۲۱,۰۰۰,۰۰۰',discount:'۸٪',seller:'صوت‌مارکت',rating:'۴.۷',type:'headset'},
+ {name:'PlayStation 5 Slim',cat:'گیمینگ',price:'۳۸,۹۰۰,۰۰۰',old:'۴۱,۰۰۰,۰۰۰',discount:'۵٪',seller:'گیم‌سنتر',rating:'۴.۹',type:'console'},
+ {name:'iPhone 15 Pro 256GB',cat:'موبایل',price:'۵۸,۷۰۰,۰۰۰',old:'۶۱,۰۰۰,۰۰۰',discount:'۴٪',seller:'دیجیتال‌پلاس',rating:'۴.۸',type:'phone'},
+ {name:'ASUS Zenbook 14 OLED',cat:'لپ‌تاپ',price:'۷۲,۳۰۰,۰۰۰',old:'۷۷,۰۰۰,۰۰۰',discount:'۶٪',seller:'نوت‌بوک‌چی',rating:'۴.۶',type:'laptop'},
+ {name:'JBL Live 770NC',cat:'هدفون',price:'۸,۹۰۰,۰۰۰',old:'۱۰,۲۰۰,۰۰۰',discount:'۱۳٪',seller:'های‌تک',rating:'۴.۷',type:'headset'},
+ {name:'Xbox Series X',cat:'گیمینگ',price:'۴۳,۵۰۰,۰۰۰',old:'۴۶,۰۰۰,۰۰۰',discount:'۵٪',seller:'گیم‌سنتر',rating:'۴.۸',type:'console'}
 ];
-const cats=[["📱","موبایل"],["💻","لپ‌تاپ"],["📺","تلویزیون"],["🏠","خانه"],["🎧","هدفون"],["🎮","بازی"],["👕","پوشاک"],["🚗","خودرو"]];
-let cart=JSON.parse(localStorage.getItem("bz_cart")||"[]");
-const screen=document.querySelector("#screen");
-function money(n){return Number(n).toLocaleString("fa-IR")+" تومان"}
-function toast(t){const x=document.querySelector("#toast");x.textContent=t;x.classList.add("show");setTimeout(()=>x.classList.remove("show"),1700)}
-function go(p){
- document.querySelectorAll(".nav>button").forEach(b=>b.classList.toggle("active",b.dataset.go===p));
- if(p==="home")home(); else if(p==="search")searchPage(); else if(p==="categories")categories(); else if(p==="detail")detail(products[0]); else if(p==="cart")cartPage(); else if(p==="sell")sell(); else if(p==="profile")profile(); else if(p==="orders")orders(); else if(p==="favorites")favorites(); else if(p==="seller")seller(); else if(p==="wallet")wallet(); else if(p==="chat")chat(); else if(p==="admin")admin();
- scrollTo(0,0)
-}
-function productCard(p){return `<article class="card" data-product="${p[0]}"><div class="pic">${visual(p[1])}</div><b>${p[0]}</b><div class="price">از ${p[2]}</div><div class="muted">⭐ 4.8 · ${p[3]}</div></article>`}
-function bindCards(){document.querySelectorAll("[data-product]").forEach(x=>x.onclick=()=>detail(products.find(p=>p[0]===x.dataset.product)))}
-function home(){
-screen.innerHTML=`<section class="hero"><h1>کالاپیدا؛ بازار هوشمند شما</h1><p>قیمت‌ها را مقایسه کن، از فروشگاه معتبر بخر یا کالایت را با چند کلیک بفروش.</p><button class="btn" style="margin-top:13px;background:#fff;color:#d70d20" onclick="go('sell')">+ فروش کالا</button></section>
-<div class="box" style="margin-top:12px"><div class="row between" style="font-size:9px"><span>🛡️ خرید امن</span><span>✓ فروشنده تأییدشده</span><span>🚚 ارسال سریع</span></div></div>
-<div class="section"><h3>دسته‌بندی‌های محبوب</h3><span class="link" onclick="go('categories')">همه</span></div>
-<div class="cats">${cats.map(c=>`<div class="cat" onclick="searchFor('${c[1]}')"><span>${visual(c[0])}</span>${c[1]}</div>`).join("")}</div>
-<div class="section"><h3>پیشنهادهای امروز 🔥</h3><span class="link" onclick="go('search')">همه</span></div>
-<div class="grid">${products.slice(0,4).map(productCard).join("")}</div>
-<div class="section"><h3>مقایسه‌شده‌ترین کالاها</h3></div>
-<div class="list">${products.slice(0,2).map(p=>`<div class="item" onclick="detail(products.find(x=>x[0]==='${p[0]}'))"><div class="thumb">${visual(p[1])}</div><div><h4>${p[0]}</h4><p>${p[3]} · مقایسه قیمت</p><strong>از ${p[2]} تومان</strong></div><b>›</b></div>`).join("")}</div>`;
-bindCards()
-}
-function searchFor(s){go("search");setTimeout(()=>{document.querySelector("#searchInput").value=s;renderSearch()},0)}
-function searchPage(){screen.innerHTML=`<div class="row"><button class="back" onclick="go('home')">→</button><b class="title">جستجوی کالا</b></div><label class="search" style="margin-top:12px">⌕<input id="searchInput" placeholder="مثلاً سامسونگ S25"></label><div class="chips" style="margin-top:9px"><span class="chip on">همه</span><span class="chip">فروشگاه</span><span class="chip">دست‌دوم</span><span class="chip">تخفیف</span></div><div class="section"><h3 id="resultCount">نتایج</h3><span class="link" onclick="toast('مرتب‌سازی تغییر کرد')">مرتب‌سازی</span></div><div id="results" class="list"></div>`;document.querySelector("#searchInput").oninput=renderSearch;renderSearch()}
-function renderSearch(){let q=(document.querySelector("#searchInput")?.value||"").toLowerCase();let a=products.filter(p=>p.join(" ").toLowerCase().includes(q));document.querySelector("#resultCount").textContent=a.length+" نتیجه";document.querySelector("#results").innerHTML=a.map(p=>`<div class="item" onclick='detail(products[${products.indexOf(p)}])'><div class="thumb">${visual(p[1])}</div><div><h4>${p[0]}</h4><p>${p[3]} · ⭐ 4.8</p><strong>از ${p[2]} تومان</strong></div><button class="btn light" onclick="event.stopPropagation();detail(products[${products.indexOf(p)}])">مقایسه</button></div>`).join("")||"<p class='muted'>نتیجه‌ای پیدا نشد.</p>"}
-function categories(){screen.innerHTML=`<div class="row"><button class="back" onclick="go('home')">→</button><b class="title">دسته‌بندی‌ها</b></div><div class="list" style="margin-top:14px">${cats.concat([["🛠️","ابزار"],["⚽","ورزش"],["💍","زیبایی"],["•••","سایر"]]).map(c=>`<div class="item" onclick="searchFor('${c[1]}')"><div class="thumb">${visual(c[0])}</div><div><b>${c[1]}</b><p>هزاران کالا و فروشنده</p></div>›</div>`).join("")}</div>`}
-function detail(p){screen.innerHTML=`<div class="row between"><button class="back" onclick="go('home')">→</button><span>♡　↗</span></div><div class="detailpic">${visual(p[1])}</div><div class="section"><h2 style="font-size:18px;margin:0">${p[0]}</h2><span style="color:#f2a000">★ 4.8</span></div><b style="font-size:20px">از ${p[2]} تومان</b><p class="muted">${p[3]} · ۱۲ فروشنده فعال</p><div class="section"><h3>مقایسه فروشندگان</h3></div><div class="list">${["دیجیتال سنتر","فروشگاه مرکزی","فروشنده شخصی"].map((s,i)=>`<div class="box row"><div><b>${s}</b><p class="muted">✓ تأییدشده · ارسال امروز · ⭐ 4.${8-i}</p><strong>${(49_800_000+i*900_000).toLocaleString("fa-IR")} تومان</strong></div><button class="btn" onclick="addCart('${p[0]}')">خرید</button></div>`).join("")}</div><div class="section"><h3>مشخصات</h3></div><div class="list"><div class="item"><span>گارانتی</span><b>۱۸ ماه</b></div><div class="item"><span>وضعیت</span><b>نو</b></div><div class="item"><span>ارسال</span><b style="color:var(--green)">رایگان</b></div></div>`}
-function addCart(n){cart.push(n);localStorage.setItem("bz_cart",JSON.stringify(cart));toast("به سبد اضافه شد");go("cart")}
-function cartPage(){screen.innerHTML=`<div class="row"><button class="back" onclick="go('home')">→</button><b class="title">سبد خرید</b></div><div class="list" style="margin-top:14px">${cart.length?cart.map((n,i)=>{let p=products.find(x=>x[0]===n)||products[0];return `<div class="item"><div class="thumb">${visual(p[1])}</div><div><h4>${p[0]}</h4><p>فروشنده معتبر · ارسال رایگان</p><strong>${p[2]} تومان</strong></div><button class="icon" onclick="cart.splice(${i},1);localStorage.setItem('bz_cart',JSON.stringify(cart));cartPage()">×</button></div>`}).join(""):`<div class="box" style="text-align:center;padding:35px">🛒<br><b>سبد خرید خالی است</b></div>`}</div>${cart.length?`<div class="box" style="margin-top:12px"><div class="row between"><span>مبلغ کالا</span><b>${money(cart.reduce((a,n)=>a+Number((products.find(x=>x[0]===n)||products[0])[2].replace(/,/g,"")),0))}</b></div><div class="row between" style="margin-top:9px"><span>ارسال</span><b style="color:var(--green)">رایگان</b></div><button class="btn full" onclick="toast('پرداخت امن در نسخه آزمایشی')">ادامه پرداخت</button></div>`:""}`}
-function sell(){screen.innerHTML=`<div class="row"><button class="back" onclick="go('home')">→</button><b class="title">فروش کالا</b></div><div class="detailpic" style="height:175px;margin-top:12px">📷</div><button class="btn full" onclick="toast('تصویر نمونه اضافه شد')">+ افزودن عکس</button><div class="form"><label>عنوان کالا</label><input id="sellName" class="input" value="iPhone 15 128GB"><label>دسته‌بندی</label><select class="input"><option>موبایل و تبلت</option><option>لپ‌تاپ</option><option>خانه</option></select><label>وضعیت</label><div class="chips"><span class="chip on">نو</span><span class="chip">در حد نو</span><span class="chip">کارکرده</span></div><label>قیمت</label><input class="input" value="49800000"><label>توضیحات</label><textarea class="input textarea">کالا سالم و آماده معامله.</textarea></div><button class="btn full" onclick="toast('آگهی با موفقیت برای بررسی ارسال شد')">🚀 انتشار آگهی</button>`}
-function profile(){screen.innerHTML=`<div class="box"><div class="row"><div class="avatar">ع</div><div><b style="font-size:18px">علی محمدی</b><p class="muted">⭐ 4.8 · احراز هویت‌شده</p></div></div><div class="kpi" style="margin-top:13px"><div class="stat"><b>۱۲</b><span>آگهی</span></div><div class="stat"><b>۵۸</b><span>فروش</span></div><div class="stat"><b>۱۲۴</b><span>علاقه‌مندی</span></div></div></div><button class="btn full" onclick="go('sell')">+ ثبت آگهی</button><div class="list" style="margin-top:12px">${[["📦","سفارش‌های من","orders"],["♥","علاقه‌مندی‌ها","favorites"],["🏪","فروشگاه من","seller"],["💳","کیف پول","wallet"],["⚙️","تنظیمات",null]].map(x=>`<div class="item" onclick="${x[2]?`go('${x[2]}')`:`toast('تنظیمات آماده است')`}"><span style="font-size:22px">${x[0]}</span><div><b>${x[1]}</b><p class="muted">مدیریت و مشاهده</p></div>›</div>`).join("")}</div>`}
-function orders(){screen.innerHTML=`<div class="row"><button class="back" onclick="go('profile')">→</button><b class="title">سفارش‌های من</b></div><div class="list" style="margin-top:14px"><div class="item"><div class="thumb">📦</div><div><h4>#BZ-12584 · iPhone 15</h4><p>در حال ارسال · تحویل به‌زودی</p><strong>۴۹,۸۰۰,۰۰۰ تومان</strong></div></div><div class="item"><div class="thumb">🎧</div><div><h4>#BZ-11902 · AirPods Pro 2</h4><p>تحویل‌شده ✓</p><strong>۸,۹۰۰,۰۰۰ تومان</strong></div></div></div>`}
-function favorites(){screen.innerHTML=`<div class="row"><button class="back" onclick="go('profile')">→</button><b class="title">علاقه‌مندی‌ها</b></div><div class="grid" style="margin-top:14px">${products.slice(0,4).map(productCard).join("")}</div>`;bindCards()}
-function seller(){screen.innerHTML=`<div class="row"><button class="back" onclick="go('profile')">→</button><b class="title">فروشگاه من</b></div><div class="hero" style="margin-top:12px"><b>دیجیتال مارکت علی</b><p>✓ فروشنده تأییدشده · ⭐ 4.8</p><strong style="font-size:24px">۱۲۴,۸۰۰,۰۰۰</strong><small> فروش این ماه</small></div><div class="kpi" style="margin-top:12px"><div class="stat"><b>۴۸</b><span>سفارش</span></div><div class="stat"><b>۲,۴۸۰</b><span>بازدید</span></div><div class="stat"><b>۸۲٪</b><span>تبدیل</span></div></div><button class="btn full" onclick="go('sell')">+ افزودن محصول</button>`}
-function wallet(){screen.innerHTML=`<div class="row"><button class="back" onclick="go('profile')">→</button><b class="title">کیف پول</b></div><div class="wallet" style="margin-top:14px"><small>موجودی قابل برداشت</small><h1>۱۲,۴۸۰,۰۰۰</h1><small>تومان</small></div><button class="btn full" onclick="toast('درخواست برداشت ثبت شد')">برداشت وجه</button><div class="section"><h3>آخرین تراکنش‌ها</h3></div><div class="list"><div class="item">🟢 فروش iPhone 15 <b style="margin-right:auto;color:var(--green)">+۴۹,۸۰۰,۰۰۰</b></div><div class="item">🔴 تبلیغ آگهی <b style="margin-right:auto;color:var(--red)">-۱۰۰,۰۰۰</b></div></div>`}
-function chat(){screen.innerHTML=`<div class="row"><button class="back" onclick="go('home')">→</button><b class="title">پیام‌ها</b></div><div class="list" style="margin-top:14px"><div class="item" onclick="toast('گفتگو باز شد')"><div class="thumb">👤</div><div><h4>فروشنده iPhone</h4><p>سلام، هنوز موجوده؟</p></div></div><div class="item"><div class="thumb">🏪</div><div><h4>دیجیتال مارکت</h4><p>سفارش شما ارسال شد.</p></div></div></div>`}
-function admin(){screen.innerHTML=`<div class="row"><button class="back" onclick="go('profile')">→</button><b class="title">مدیریت کالاپیدا</b></div><div class="kpi" style="margin-top:14px"><div class="stat"><b>۱۲۵K</b><span>کاربر</span></div><div class="stat"><b>۸۴۵K</b><span>آگهی</span></div><div class="stat"><b>۴۸K</b><span>معامله</span></div></div><div class="list" style="margin-top:12px">${["⏳ بررسی آگهی‌ها","🚨 گزارش تخلف","👥 کاربران","🏪 فروشندگان","💳 پرداخت‌ها"].map(x=>`<div class="item" onclick="toast('${x.slice(2)}')">${x} <b style="margin-right:auto">›</b></div>`).join("")}</div>`}
-
-document.querySelectorAll(".nav>button").forEach(b=>b.onclick=()=>go(b.dataset.go));
-document.querySelector("#menu").onclick=()=>document.querySelector("#drawer").classList.add("open");
-document.querySelector("#close").onclick=()=>document.querySelector("#drawer").classList.remove("open");
-document.querySelector("#drawer").onclick=e=>{if(e.target.id==="drawer")e.currentTarget.classList.remove("open")};
-document.querySelectorAll(".dmenu button").forEach(b=>b.onclick=()=>{document.querySelector("#drawer").classList.remove("open");go(b.dataset.go)});
-document.querySelector("#bell").onclick=()=>toast("اعلان جدیدی ندارید");
-document.querySelector("#search").oninput=e=>{if(e.target.value.trim()){go("search");setTimeout(()=>{document.querySelector("#searchInput").value=e.target.value;renderSearch()},0)}};
-home();
-if("serviceWorker" in navigator) navigator.serviceWorker.register("sw.js");
+const grid=document.getElementById('productGrid');
+function render(list=products){grid.innerHTML=list.map((p,i)=>`<article class="product"><button class="heart" onclick="toggleFav(this)">♡</button><span class="discount">${p.discount} تخفیف</span><div class="product-visual"><div class="prod-${p.type}"></div></div><div class="product-info"><h3>${p.name}</h3><div class="seller"><span>فروشنده: ${p.seller}</span><span class="rating">★ ${p.rating}</span></div><div class="price-row"><div class="price"><b>${p.price}</b><small>تومان</small></div><button class="add" onclick="addCart('${p.name}')">＋</button></div></div></article>`).join('')}
+render();
+function scrollToId(id){document.getElementById(id)?.scrollIntoView({behavior:'smooth'})}
+function openSidePanel(){document.getElementById('sidebar').classList.add('open');document.getElementById('overlay').classList.add('show')}
+document.getElementById('openSide').onclick=openSidePanel;document.getElementById('closeSide').onclick=()=>{document.getElementById('sidebar').classList.remove('open');document.getElementById('overlay').classList.remove('show')};document.getElementById('overlay').onclick=()=>document.getElementById('closeSide').click();
+function filterCat(cat){render(products.filter(p=>p.cat===cat));scrollToId('products');document.querySelectorAll('.cat').forEach(x=>x.classList.remove('active'));event?.currentTarget?.classList.add('active')}
+function doSearch(){const q=document.getElementById('search').value.trim();if(!q){render();return}render(products.filter(p=>(p.name+p.cat+p.seller).includes(q)));scrollToId('products')}
+document.getElementById('search').addEventListener('keydown',e=>{if(e.key==='Enter')doSearch()});
+function addCart(name){let n=+(document.getElementById('cartCount').textContent||0)+1;document.getElementById('cartCount').textContent=n;toast('«'+name+'» به سبد اضافه شد');}
+function toggleFav(btn){btn.textContent=btn.textContent==='♡'?'♥':'♡';btn.style.color=btn.textContent==='♥'?'#e5092f':''}
+function openSell(){document.getElementById('sellModal').classList.add('show')};function closeSell(){document.getElementById('sellModal').classList.remove('show')};
+function submitSell(){const name=document.getElementById('sellName').value||'کالای جدید';closeSell();toast('آگهی «'+name+'» برای ثبت آماده شد');}
+function toast(msg){let t=document.getElementById('toast');if(!t){t=document.createElement('div');t.id='toast';Object.assign(t.style,{position:'fixed',bottom:'85px',left:'50%',transform:'translateX(-50%)',background:'#17171b',color:'#fff',padding:'12px 18px',borderRadius:'13px',fontSize:'11px',zIndex:80,boxShadow:'0 15px 35px rgba(0,0,0,.2)'});document.body.appendChild(t)}t.textContent=msg;t.style.opacity='1';clearTimeout(window.tt);window.tt=setTimeout(()=>t.style.opacity='0',2200)}
+window.addEventListener('keydown',e=>{if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==='k'){e.preventDefault();document.getElementById('search').focus()}});
+if('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js').catch(()=>{});
