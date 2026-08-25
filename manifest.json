@@ -1,6 +1,6 @@
 {
-  "name": "بازارینو",
-  "short_name": "بازارینو",
+  "name": "کالاپیدا",
+  "short_name": "کالاپیدا",
   "start_url": "./",
   "display": "standalone",
   "background_color": "#f6f6f8",
@@ -14,5 +14,6 @@
       "type": "image/svg+xml",
       "purpose": "any maskable"
     }
-  ]
+  ],
+  "description": "کالاپیدا؛ خرید، مقایسه قیمت و فروش کالا"
 }
