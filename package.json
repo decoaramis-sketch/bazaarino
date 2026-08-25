@@ -1,0 +1,13 @@
+{
+  "name": "bazaarino",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "lint": "node scripts/lint.js",
+    "format:check": "node scripts/format-check.js",
+    "test": "node --test",
+    "validate": "node --check app.js && node --check sw.js && node --check scripts/lint.js && node --check scripts/format-check.js && node --check scripts/validate-assets.js && node --check scripts/validate-html.js && npm run lint && npm run format:check && npm run html:check && npm test && node scripts/validate-assets.js",
+    "html:check": "node scripts/validate-html.js"
+  }
+}
