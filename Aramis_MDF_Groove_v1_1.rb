@@ -11,15 +11,28 @@ module AramisMDFGroove
     edge = selection.grep(Sketchup::Edge).first
 
     unless edge && edge.valid?
-      UI.messagebox("ابتدا یک لبه از سطح MDF را انتخاب کن.")
+      UI.messagebox("ابتدا یک لبه از سطح پشت MDF را انتخاب کن.")
       return
     end
 
-    # Thickness is also the distance from the selected edge to the groove.
-    prompts = ["ضخامت MDF (میل‌متر):", "جهت شیار:"]
-    defaults = ["16", "سمت اول"]
-    lists = ["", "سمت اول|سمت دوم"]
-    values = UI.inputbox(prompts, defaults, lists, "Aramis MDF Groove")
+    ents = model.active_entities
+    unless edge.parent == ents
+      UI.messagebox("اگر MDF داخل Group یا Component است، ابتدا وارد همان Group/Component شو و سپس لبه را انتخاب کن.")
+      return
+    end
+
+    face = edge.faces.find { |f| f.valid? && f.plane }
+    unless face
+      UI.messagebox("برای این لبه یک سطح معتبر MDF پیدا نشد.")
+      return
+    end
+
+    values = UI.inputbox(
+      ["ضخامت MDF (میل‌متر):", "جهت شیار:"],
+      ["16", "سمت اول"],
+      ["", "سمت اول|سمت دوم"],
+      "Aramis MDF Groove 3x8"
+    )
     return unless values
 
     thickness_mm = values[0].to_f
@@ -30,23 +43,17 @@ module AramisMDFGroove
       return
     end
 
-    face = edge.faces.find { |f| f.valid? && f.plane }
-    unless face
-      UI.messagebox("برای این لبه یک سطح معتبر پیدا نشد.")
-      return
-    end
-
     p1 = edge.start.position
     p2 = edge.end.position
-    line_dir = p2 - p1
-    if line_dir.length <= 0.1.mm
+    edge_vector = p2 - p1
+    if edge_vector.length <= 0.1.mm
       UI.messagebox("لبه انتخاب‌شده خیلی کوتاه است.")
       return
     end
-    line_dir.normalize!
+    edge_vector.normalize!
 
-    # A vector perpendicular to the selected edge and lying on the MDF face.
-    side = line_dir.cross(face.normal)
+    # Vector lying on the selected MDF face and perpendicular to the edge.
+    side = edge_vector.cross(face.normal)
     if side.length <= 0.001.mm
       UI.messagebox("جهت شیار قابل تشخیص نیست.")
       return
@@ -54,42 +61,44 @@ module AramisMDFGroove
     side.normalize!
     side.reverse! if direction == "سمت دوم"
 
-    # Move the groove by exactly the MDF thickness from the selected edge.
-    offset = thickness_mm.mm
-    center1 = p1.offset(side, offset)
-    center2 = p2.offset(side, offset)
+    # The groove CENTER is exactly one MDF thickness away from the selected edge.
+    # Therefore 16 mm MDF => 16 mm center offset, 18 mm MDF => 18 mm center offset.
+    center_offset = thickness_mm.mm
     half_width = GROOVE_WIDTH / 2.0
+
+    center1 = p1.offset(side, center_offset)
+    center2 = p2.offset(side, center_offset)
 
     a = center1.offset(side, -half_width)
     b = center2.offset(side, -half_width)
     c = center2.offset(side,  half_width)
     d = center1.offset(side,  half_width)
 
-    ents = model.active_entities
-    unless edge.parent == ents
-      UI.messagebox("اگر MDF داخل Group یا Component است، ابتدا وارد همان Group/Component شو و سپس لبه را انتخاب کن.")
-      return
-    end
-
     model.start_operation("Aramis MDF Groove 3mm x 8mm", true)
 
     begin
+      # Make a shallow rectangular cutting profile on the selected MDF face.
       groove_face = ents.add_face(a, b, c, d)
-      raise "نتوانستم سطح شیار را بسازم." unless groove_face
+      raise "نتوانستم سطح شیار را بسازم." unless groove_face && groove_face.valid?
 
-      # The groove is cut 8 mm into the MDF. Reverse the face if required so
-      # pushpull goes into the material rather than outward.
-      if groove_face.normal.dot(face.normal) > 0
+      # IMPORTANT: do not use the face normal to guess the vertical direction.
+      # pushpull must follow the selected MDF face normal, toward the material.
+      # We create the profile with the same normal as the MDF face and then
+      # push it opposite to that normal, which cuts into the back side.
+      if groove_face.normal.dot(face.normal) < 0
         groove_face.reverse!
       end
 
-      groove_face.pushpull(GROOVE_DEPTH)
+      # Selected face is the BACK surface of the MDF. Cut 8 mm into the MDF.
+      groove_face.pushpull(-GROOVE_DEPTH)
 
       model.commit_operation
       model.selection.clear
+
       UI.messagebox(
         "شیار با موفقیت ایجاد شد.\n\n" \
-        "فاصله از لبه: #{thickness_mm.to_s} میل\n" \
+        "ضخامت MDF: #{thickness_mm} میل\n" \
+        "فاصله مرکز شیار از لبه: #{thickness_mm} میل\n" \
         "عرض شیار: 3 میل\n" \
         "عمق شیار: 8 میل\n" \
         "جهت: #{direction}"
